@@ -16,9 +16,10 @@ return new class extends Migration
             $table->foreignId('home_club_id')->nullable()->constrained('clubs')->cascadeOnDelete();
             $table->foreignId('away_club_id')->nullable()->constrained('clubs')->cascadeOnDelete();
             $table->foreignId('venue_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('round_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('home_club_score')->nullable();
             $table->string('away_club_score')->nullable();
-            $table->timestamp('kick_off');
+            $table->unsignedBigInteger('kick_off')->nullable();
             $table->timestamps();
         });
     }
