@@ -1,7 +1,6 @@
 <?php
 
 return [
-    //api-football url and api key
     'url'     => env('API_FOOTBALL_URL', 'https://v3.football.api-sports.io'),
     'season'  => env('API_FOOTBALL_SEASON', '2024'),
     'league'  => env('API_FOOTBALL_LEAGUE', '39'),
