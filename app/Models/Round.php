@@ -5,13 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Venue extends Model
+class Round extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'id',
         'name',
-        'slug'
+        'season',
+        'league',
     ];
+
+    public function fixtures()
+    {
+        return $this->hasMany(Fixture::class);
+    }
 }
