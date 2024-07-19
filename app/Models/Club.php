@@ -14,6 +14,7 @@ class Club extends Model
         'name',
         'slug',
         'image',
+        'league',
         'venue_id',
     ];
 }

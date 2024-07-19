@@ -12,7 +12,7 @@ class UpdateFixtures extends Command
      *
      * @var string
      */
-    protected $signature = 'update:fixtures {--T|type=live}';
+    protected $signature = 'update:fixtures {--T|type=live} {--L|league=premier_league}';
 
     /**
      * The console command description.
@@ -27,14 +27,25 @@ class UpdateFixtures extends Command
     public function handle()
     {
         $type = $this->option('type') ?? 'live';
+        $league = $this->option('league') ?? 'live';
 
         if ($type !== 'live' && $type !== 'all') {
             $this->output->error('Invalid Type');
             return;
         }
 
-        $clubsVenuesService = new FixtureService();
-        $response = $clubsVenuesService->getData($type);
+        if ($league !== 'premier_league' && $league !== 'all') {
+            $this->output->error('Invalid League');
+            return;
+        }
+
+        $FixtureService = new FixtureService();
+
+        if ($league === 'premier_league') {
+            $response = $FixtureService->getPremierLeagueData($type);
+        } else {
+            $response = $FixtureService->getAllLeaguesData($type);
+        }
 
         $response = $response->getData();
 
