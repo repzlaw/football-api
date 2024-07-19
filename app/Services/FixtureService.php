@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Club;
 use App\Models\Round;
 use App\Models\Fixture;
+use App\Models\Venue;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -71,9 +72,9 @@ class FixtureService
 
     public function getAllLeaguesData($type)
     {
-        $clubs = Club::all();
+        $clubs = Club::where('league', $this->league)->get();
 
-        foreach ($clubs as $key => $club) {
+        foreach ($clubs as $club) {
             $queries = [
                 'team'   => $club->id,
                 'season'   => $this->season,
@@ -92,6 +93,7 @@ class FixtureService
                 ])
                 ->get("$this->url/fixtures", $queries);
             } catch (\Exception $e) {
+
                 Log::error('An exception occurred: ' . $e->getMessage());
                 return $this->error([],
                     $e->getMessage(),
@@ -102,8 +104,7 @@ class FixtureService
             $this->updateAllLeagues($response->json()['response']);
         }
 
-
-        return $this->success($response->json(),
+        return $this->success([],
             'success',
             Response::HTTP_OK
         );
@@ -147,9 +148,20 @@ class FixtureService
                 'name'   => $fixture['league']['round']
             ]); 
 
-            $this->VenueService->update($fixture['fixture']['venue']);
-            $this->ClubService->update($fixture['teams']['home'], $fixture['fixture']['venue']['id'], false);
-            $this->ClubService->update($fixture['teams']['away'], $fixture['fixture']['venue']['id'], false);
+            $venue = Venue::find($fixture['fixture']['venue']['id']);
+            if (!$venue) {
+                $this->VenueService->update($fixture['fixture']['venue']);
+            }
+
+            $home_club = Club::find($fixture['teams']['home']['id']);
+            if (!$home_club) {
+                $this->ClubService->update($fixture['teams']['home'], $fixture['fixture']['venue']['id'], false);
+            }
+
+            $away_club = Club::find($fixture['teams']['away']['id']);
+            if (!$away_club) {
+                $this->ClubService->update($fixture['teams']['away'], $fixture['fixture']['venue']['id'], false);
+            }
 
             Fixture::updateOrCreate(
                 ['id' => $fixture['fixture']['id']],
