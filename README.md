@@ -62,5 +62,4 @@ To get started with the project, follow the instructions below.
 8. Artisan commands to run:
    ```bash
    php artisan update:clubs-venues
-   php artisan update:fixtures --type=all
-   php artisan update:fixtures
+   php artisan update:fixtures --type=all --league=all
